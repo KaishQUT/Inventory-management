@@ -1,13 +1,20 @@
 package GUI;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.io.IOException;
-import java.util.*;
-import javax.swing.*;
-import javax.swing.table.*;
-import Exceptions.*;
+import Exceptions.CSVFormatException;
+import Exceptions.DeliveryException;
+import Exceptions.StockException;
 import Objects.*;
+
+import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.filechooser.FileSystemView;
+import javax.swing.table.DefaultTableModel;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
+import java.util.NoSuchElementException;
 
 /**
  * This will build the GUI content each time the main will be run. Different components were used for the project.
@@ -35,8 +42,6 @@ public class GUI extends JFrame implements ActionListener, Runnable {
 	JButton reset = new JButton("      Reset all      ");
 	// TextFields
 	Box TextBox = Box.createVerticalBox();
-	JTextField ItemTxtField = new JTextField("Type filename.csv for item properties", 20); 
-	JTextField SalesLogTxtField = new JTextField("Type filename.csv for sales log", 20);
 	// Labels and uneditable text fields
 	JLabel storeNameLabel = new JLabel("   Store Name:");
 	JLabel storeCapitalLabel = new JLabel("   Capital:");
@@ -53,7 +58,7 @@ public class GUI extends JFrame implements ActionListener, Runnable {
 	 */
 	public void createGUI() {
 		
-		this.setSize(1000, 300);
+		this.setSize(900, 300);
 		this.setLocationRelativeTo(null);
 		this.setResizable(false);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -80,20 +85,20 @@ public class GUI extends JFrame implements ActionListener, Runnable {
 		buttonsBox.add(storeCapitalLabel);
 		buttonsBox.add(Box.createVerticalStrut(4));
 		buttonsBox.add(storeInventoryLabel);
-		
+
 		// Listener for Item properties (LoadItemsButton)
 		LoadItemsButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				String filename = ItemTxtField.getText();
 				try {
+					String filename = readCSV();
 					Item.readItem(filename);
 					updateTable();
 					storeInventoryTxtField.setText(String.format("%d", Store.getInventory()));
 				} catch (IOException e1) {
 					updateTable();
 					JOptionPane.showMessageDialog(null,"Please enter a valid item properties csv filename",
-							"Error",JOptionPane.ERROR_MESSAGE); 
+							"Error",JOptionPane.ERROR_MESSAGE);
 				} catch (NumberFormatException e2) {
 					updateTable();
 					CSVFormatException.ErrorMessage1();
@@ -102,6 +107,9 @@ public class GUI extends JFrame implements ActionListener, Runnable {
 					CSVFormatException.ErrorMessage2();
 				} catch (StockException e4) {
 					StockException.ErrorMessage2();
+				} catch (Exception e5) {
+					updateTable();
+					CSVFormatException.ErrorMessage1();
 				}
 			}	
 		});
@@ -110,8 +118,8 @@ public class GUI extends JFrame implements ActionListener, Runnable {
 		SalesLogButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				String filename = SalesLogTxtField.getText();
 				try {
+					String filename = readCSV();
 					Stock.readSalesLog(filename);
 					updateTable();
 					manifestFlag = false;
@@ -223,20 +231,13 @@ public class GUI extends JFrame implements ActionListener, Runnable {
 						storeCapitalTxtField.setText(String.format("$%,.2f", Store.getCapital()));
 						storeInventoryTxtField.setText(String.format("%d", Store.getInventory()));
 						tableModel.setRowCount(0);
-						ItemTxtField.setText("Type filename.csv for item properties");
-						SalesLogTxtField.setText("Type filename.csv for sales log");
 					}
 				}
 		}});
 		
 		// text fields
-		ItemTxtField.setMaximumSize(new Dimension(500, 25));
-		SalesLogTxtField.setMaximumSize(new Dimension(500, 25));
 		storeCapitalTxtField.setMaximumSize(new Dimension(200, 25));
-		TextBox.add(Box.createVerticalStrut(8));
-		TextBox.add(ItemTxtField);
-		TextBox.add(SalesLogTxtField);
-		TextBox.add(Box.createVerticalStrut(142));
+		TextBox.add(Box.createVerticalStrut(199));
 		TextBox.add(storeNameTxtField);
 		storeCapitalTxtField.setEditable(false);
 		TextBox.add(storeCapitalTxtField);
@@ -247,6 +248,23 @@ public class GUI extends JFrame implements ActionListener, Runnable {
 		panel.add(TextBox, BorderLayout.CENTER);
 
 		this.setVisible(true);
+	}
+
+	public String readCSV() {
+		File workingDirectory = new File(System.getProperty("user.dir"));
+		JFileChooser jfc = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
+		jfc.setCurrentDirectory(workingDirectory);
+		jfc.setDialogTitle("Select a csv file");
+		jfc.setAcceptAllFileFilterUsed(false);
+		FileNameExtensionFilter filter = new FileNameExtensionFilter("CSV files", "csv");
+		jfc.addChoosableFileFilter(filter);
+
+		int returnValue = jfc.showOpenDialog(null);
+		if (returnValue == JFileChooser.APPROVE_OPTION) {
+			File selectedFile = jfc.getSelectedFile();
+			return selectedFile.getAbsolutePath();
+		}
+		return null;
 	}
 	
 	/**

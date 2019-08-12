@@ -1,6 +1,6 @@
 package Exceptions;
 
-import javax.swing.JOptionPane;
+import javax.swing.*;
 
 /**
  * This is the Delivery exception handling for dealing with creating the manifest or reading the sales log while there is no item. 

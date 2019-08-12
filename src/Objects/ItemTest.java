@@ -1,9 +1,13 @@
 package Objects;
 
-import static org.junit.Assert.assertEquals;
+import Exceptions.CSVFormatException;
+import Exceptions.StockException;
+import org.junit.Before;
+import org.junit.Test;
+
 import java.io.IOException;
-import org.junit.*;
-import Exceptions.*;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * Unit Tests for Class Item

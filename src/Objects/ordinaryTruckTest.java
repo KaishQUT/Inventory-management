@@ -1,7 +1,8 @@
 package Objects;
 
-import static org.junit.Assert.assertEquals;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * This is a Test for the ordinaryTruck class which basically test the method getCost.

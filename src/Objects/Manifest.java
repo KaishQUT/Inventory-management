@@ -1,9 +1,15 @@
 package Objects;
 
+import Exceptions.CSVFormatException;
+import Exceptions.DeliveryException;
+import Exceptions.StockException;
+import GUI.GUI;
+
 import java.io.*;
-import java.util.*;
-import Exceptions.*;
-import GUI.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * This class Loads and creates manifest for the store.
@@ -93,6 +99,7 @@ public class Manifest {
 			throw new CSVFormatException();
 		}
 
+		System.out.println(System.getProperty("user.dir"));
 		PrintWriter manifest = new PrintWriter(new FileWriter("manifest.csv", false));
 		StringBuilder manifest_sb = new StringBuilder();
 		totalCost = 0;

@@ -1,8 +1,11 @@
 package GUI;
 
-import java.io.IOException;
+import Exceptions.CSVFormatException;
+import Exceptions.DeliveryException;
+import Exceptions.StockException;
+
 import javax.swing.*;
-import Exceptions.*;
+import java.io.IOException;
 
 /**
  * this is the GUI class. every time the class will run, a new GUI will be created and start the application.

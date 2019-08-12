@@ -1,6 +1,6 @@
 package Exceptions;
 
-import javax.swing.JOptionPane;
+import javax.swing.*;
 
 /**
  * This is the Stock exception handling for dealing with loading the sales log. This will show an error message when there 

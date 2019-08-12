@@ -1,8 +1,13 @@
 package Objects;
 
-import java.io.*;
-import java.util.*;
-import Exceptions.*;
+import Exceptions.CSVFormatException;
+import Exceptions.StockException;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class will read the item properties from item_properties.csv file. In each row, an object of the Item 
@@ -37,14 +42,14 @@ public class Item {
 	 * @throws CSVFormatException class extend exceptions that will catch the CSV format issues
 	 */
 	public static void readItem(String filename) throws IOException, CSVFormatException, StockException {
-		
+
 		if (itemsHaveLoaded && !items.isEmpty()) {
 			throw new CSVFormatException();
 		}
 		itemsHaveLoaded = true;
 		items.clear();
 		itemAlreadyIn.clear();
-		
+
 		FileReader item_properties = new FileReader(filename);
 		@SuppressWarnings("resource")
 		BufferedReader reader = new BufferedReader(item_properties);
@@ -54,18 +59,18 @@ public class Item {
 				break;
 			}
 			String[] properties = line.split(",");
-			
+
 			double ManufacturingCost = Double.parseDouble(properties[1]);
 			double SellPrice = Double.parseDouble(properties[2]);
 			int ReorderPoint = Integer.parseInt(properties[3]);
 			int ReorderAmount = Integer.parseInt(properties[4]);
-			
+
 			if (itemAlreadyIn.contains(properties[0])) {
 				itemsHaveLoaded = false;
 				throw new StockException();
 			}
 			itemAlreadyIn.add(properties[0]);
-			
+
 			if (properties.length > 5) {
 				double Temperature = Double.parseDouble(properties[5]);
 				Item item = new Item(properties[0], ManufacturingCost, SellPrice, ReorderPoint, ReorderAmount, ReorderAmount, 0, Temperature);
@@ -78,7 +83,7 @@ public class Item {
 			}
 		}
 		reader.close();
-		
+
 	}
 	
 	/**

@@ -1,9 +1,13 @@
 package Objects;
 
-import static org.junit.Assert.*;
-import java.io.IOException;
+import Exceptions.CSVFormatException;
+import Exceptions.DeliveryException;
+import Exceptions.StockException;
 import org.junit.Test;
-import Exceptions.*;
+
+import java.io.IOException;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * This is the Junit Test for class Store.
